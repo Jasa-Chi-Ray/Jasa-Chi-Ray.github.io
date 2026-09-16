@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="index, follow" name="robots"/>
+<meta content="#111315" name="theme-color"/>
+<meta content="认识 ChatGPT Mirror：多用户、账号池、共享对话隔离与日常运维。查看项目真实界面，跟随 Docker Compose 与 HTTPS 教程部署自己的研究环境。" name="description"/>
+<meta content="ChatGPT Mirror · 熟悉的体验，自在的空间" property="og:title"/>
+<meta content="项目介绍、真实界面展示与从零开始的 Docker Compose 部署指南。" property="og:description"/>
+<meta content="article" property="og:type"/>
+<link href="https://jasa-chi-ray.github.io/projects/chatgpt-mirror/" rel="canonical"/>
+<title>ChatGPT Mirror 的 VPS 部署记录 | Jasa-Chi-Ray</title>
+<link href="../../assets/favicon.svg" rel="icon" type="image/svg+xml"/>
+<link href="../../styles.css" rel="stylesheet"/>
+<link href="../../blog.css" rel="stylesheet"/>
+<script defer="" src="../../app.js"></script>
+</head>
+<body class="blog-post">
+<a class="skip-link" href="#main">跳转到正文</a>
+<header class="site-header">
+<a class="blog-brand" href="../../">Jasa-Chi-Ray<span> / Blog</span></a>
+
+
+<!-- 外部项目链接暂不展示：<a class="header-github" href="https://github.com/Jasa-Chi-Ray/chatgpt-mirror" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4.3 1.3-4.3-2.2-6-2.7m12 5v-3.4c0-1 .1-1.4-.5-2 3.1-.3 6.4-1.5 6.4-7A5.4 5.4 0 0 0 19.4 5a5 5 0 0 0-.1-3.8S18.1.8 15.4 2.6a13.3 13.3 0 0 0-6.8 0C5.9.8 4.7 1.2 4.7 1.2A5 5 0 0 0 4.6 5a5.4 5.4 0 0 0-1.5 3.9c0 5.5 3.3 6.7 6.4 7-.5.5-.6 1.1-.5 2v3.4"/></svg> GitHub <span>↗</span></a> -->
+</header>
+<main id="main">
+<header class="post-heading wrap">
+<nav aria-label="面包屑" class="breadcrumbs"><a href="../../">首页</a><span>/</span><a href="../../#projects">项目笔记</a><span>/</span><span>ChatGPT Mirror</span></nav>
+<h1>ChatGPT Mirror</h1>
+<p class="post-summary">这篇文章记录 ChatGPT Mirror 的功能、VPS 部署方法，以及 HTTPS 配置和后续维护。</p>
+<div class="article-toc"><span>本文目录</span><a href="#features">项目介绍 ↘</a><a href="#preview">界面预览 ↘</a><a href="#deploy">部署教程 ↘</a><a href="#faq">常见问题 ↘</a></div>
+</header>
+<section aria-labelledby="features-title" class="section wrap" id="features">
+<div class="section-heading"><div><h2 id="features-title">关于项目</h2></div></div>
+<div class="article-prose"><p>ChatGPT Mirror 将镜像访问和后台管理放在一起。管理后台使用 Vue 3、TypeScript 和 TDesign，管理服务使用 Django 5.1，数据保存在 SQLite 中，通过 Docker Compose 部署。</p><p>后台可以集中录入 Cookie 或 Refresh Token，把上游账号组织成账号池，再为用户分配访问范围、可用模型和使用限制。共享账号时，项目会在镜像可控范围内隔离对话、归档、搜索和删除等操作。</p><p>日常维护主要通过访问日志、账号状态和代理连通性完成，也可以配置禁止访问的路径。下面先展示项目界面，再介绍 VPS 部署过程。</p></div>
+
+</section>
+<section aria-labelledby="preview-title" class="showcase" id="preview"><div class="wrap">
+<div class="section-heading"><div><h2 id="preview-title">界面与操作预览</h2></div><div><!-- 外部项目链接暂不展示：<a class="inline-link video-link" href="https://github.com/Jasa-Chi-Ray/chatgpt-mirror/blob/main/imageandvideo/%E6%BC%94%E7%A4%BA1.mp4" target="_blank" rel="noopener noreferrer">查看操作演示 <span>↗</span></a> --></div></div>
+<div class="preview-toolbar"><div aria-label="产品界面" class="tabs preview-tabs" role="tablist"><button aria-controls="panel-chat" aria-selected="true" data-preview="chat" id="tab-chat" role="tab">对话界面</button><button aria-controls="panel-login" aria-selected="false" data-preview="login" id="tab-login" role="tab" tabindex="-1">登录入口</button><button aria-controls="panel-access" aria-selected="false" data-preview="access" id="tab-access" role="tab" tabindex="-1">访问管理</button></div></div>
+<div class="preview-frame"><div class="preview-chrome"><span class="window-dots"><i></i><i></i><i></i></span><span>CHATGPT MIRROR / PRODUCT PREVIEW</span><button aria-label="放大当前界面截图" class="enlarge">⤢</button></div>
+<div aria-labelledby="tab-chat" id="panel-chat" role="tabpanel"><img alt="ChatGPT 对话界面，支持新聊天、项目与后台切换" height="1366" loading="lazy" src="../../assets/chat-preview.png" width="2658"/></div>
+<div aria-labelledby="tab-login" hidden="" id="panel-login" role="tabpanel"><img alt="ChatGPT Mirror 项目登录页面" loading="lazy" src="../../assets/login-preview.png"/></div>
+<div aria-labelledby="tab-access" hidden="" id="panel-access" role="tabpanel"><img alt="管理后台的禁止访问路径配置界面" loading="lazy" src="../../assets/access-preview.png"/></div>
+</div><div class="preview-caption"><span id="preview-description">01 — 熟悉的对话界面，连接你自己的工作流。</span><span>截图仅展示项目效果，具体界面以上游版本为准。</span></div>
+</div></section>
+<section aria-labelledby="deploy-title" class="section wrap deployment" id="deploy">
+<div class="section-heading"><div><h2 id="deploy-title">VPS 部署教程</h2></div></div>
+<div class="docs-layout">
+<div class="docs-main">
+<div class="guide-intro"><span class="guide-badge">DOCKER COMPOSE V2</span><p id="guide-intro-text">使用原仓库 docker-compose.yml 的三服务编排。以下命令在 Linux VPS 的 Bash 终端运行；HTTPS 示例假定 NGINX 与 Docker 位于同一台服务器。</p></div>
+<div id="guide-vps">
+<article class="guide-step" id="guide-environment"><div class="step-heading"><span>01</span><h3>准备好环境</h3></div><p>准备一台可访问镜像仓库及上游服务的 Linux 主机、Git、Docker Engine、Compose v2 和一个可配置 DNS 的域名。容器包含浏览器组件，资源需求应结合实际并发评估。</p><p>服务关系：chatgpt-mirror 是镜像入口，默认端口 40002；django 提供管理服务，宿主机端口为 127.0.0.1:18000；cfbypass 为辅助服务，宿主机端口为 127.0.0.1:18001，并配置 1 GB 共享内存。Compose 会等待 Django 健康检查通过后再启动镜像入口。</p><div class="prerequisites"><span>✓ Docker Engine</span><span>✓ Compose v2</span><span>✓ 域名 + TLS 证书</span></div><p>没有安装 Docker？先按 <a href="https://docs.docker.com/engine/install/" rel="noopener noreferrer" target="_blank">Docker 官方安装文档 ↗</a>完成对应系统的安装。确认当前用户有权运行 Docker，再获取项目：</p><div class="code-block"><div class="code-head"><span>BASH · 获取项目</span><button class="copy-button">复制</button></div><pre><code>docker --version
+docker compose version
+git clone https://github.com/Jasa-Chi-Ray/chatgpt-mirror.git
+cd chatgpt-mirror
+cp .env.example .env
+chmod 600 .env</code></pre></div></article>
+<article class="guide-step" id="guide-config"><div class="step-heading"><span>02</span><h3>填写配置，启动容器</h3></div><p>执行 <code>nano .env</code>，修改下列项目。将 <code>mirror.example.com</code> 替换为实际域名；保留示例文件中的其他默认配置。</p><div class="callout"><span>↳</span><p><strong>四个敏感值分别生成，不要复用。</strong>运行四次 <code>openssl rand -hex 32</code>，依次填入管理员密码及三个密钥。这里的占位符不能直接用于部署。</p></div><div class="code-block"><div class="code-head"><span>.ENV · 必填配置</span><button class="copy-button">复制</button></div><pre><code>PORT=40002
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=替换为独立随机强密码
+GATEWAY_ADMIN_SECRET=替换为独立随机密钥
+DJANGO_SECRET_KEY=替换为另一独立随机密钥
+CREDENTIAL_ENCRYPTION_KEY=替换为至少32位的独立随机密钥
+
+DJANGO_DEBUG=false
+DJANGO_ALLOW_ALL_ORIGINS=disable
+DJANGO_ALLOWED_HOSTS=mirror.example.com,django,localhost,127.0.0.1
+DJANGO_CSRF_TRUSTED_ORIGINS=https://mirror.example.com
+DJANGO_SESSION_COOKIE_SECURE=true
+DJANGO_CSRF_COOKIE_SECURE=true
+COOKIE_SECURE=true
+ALLOW_REGISTER=false
+CLOUDFLARE_TURNSTILE=disable</code></pre></div>
+<p>在同机 NGINX 反代方案中，先编辑 <code>docker-compose.yml</code>，将 <code>chatgpt-mirror</code> 服务的端口映射替换为下面这一行，使入口仅绑定回环地址。不要改动其他服务的端口。</p><div class="code-block"><div class="code-head"><span>YAML · CHATGPT-MIRROR → PORTS</span><button class="copy-button">复制</button></div><pre><code>ports:
+  - "127.0.0.1:${PORT:-40002}:${PORT:-40002}"</code></pre></div><div class="code-block"><div class="code-head"><span>BASH · 启动服务</span><button class="copy-button">复制</button></div><pre><code>docker compose config --quiet
+docker compose pull
+docker compose up -d
+docker compose ps
+docker compose logs --tail=100 django chatgpt-mirror cfbypass
+curl -fsS http://127.0.0.1:18000/0x/user/version-cfg</code></pre></div><p class="helper-text">三个服务启动后，Django 状态显示 healthy，版本接口返回 JSON。</p><p>当前 Compose 使用 frontend、backend、cfbypass 三个镜像标签，不使用 .env.example 中的 ALL_IN_ONE_IMAGE。按默认 docker-compose.yml 操作即可，无需切换为单容器部署。</p></article>
+<article class="guide-step" id="guide-https"><div class="step-heading"><span>03</span><h3>接入域名与 HTTPS</h3></div><p>把域名 A 记录指向服务器公网 IP；只有配置了可用 IPv6 时才添加 AAAA 记录。在云安全组中开放 80、443，保留你的 SSH 管理入口。下面使用宿主机 NGINX，不需要开放 40002、18000 或 18001。</p><p>以下示例使用同机 NGINX 反代，包含 WebSocket 和请求、响应头缓冲配置。先签发证书，再填写实际域名及证书路径。</p><details class="technical-detail"><summary>展开完整 NGINX 配置 <span>＋</span></summary><div class="detail-body"><p>安装 NGINX 并为域名取得 TLS 证书后，将以下内容放入 NGINX 的 <code>http</code> 上下文包含的站点文件中，例如 <code>/etc/nginx/conf.d/mirror.conf</code>。证书路径须对应实际已签发的文件。</p><p>证书可按 <a href="https://certbot.eff.org/instructions?ws=nginx&amp;os=pip" rel="noopener noreferrer" target="_blank">Certbot 官方指南 ↗</a>签发。首次签发前只启用 HTTP 站点，获得证书后再启用下方 443 配置，避免不存在的证书阻止 NGINX 启动。</p><div class="code-block"><div class="code-head"><span>NGINX · HTTPS + WEBSOCKET</span><button class="copy-button">复制</button></div><pre><code>map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+server {
+    listen 80;
+    server_name mirror.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name mirror.example.com;
+
+    ssl_certificate /etc/letsencrypt/live/mirror.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/mirror.example.com/privkey.pem;
+
+    client_max_body_size 100m;
+    large_client_header_buffers 8 64k;
+    client_header_buffer_size 64k;
+
+    location / {
+        proxy_pass http://127.0.0.1:40002;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_read_timeout 600s;
+        proxy_send_timeout 600s;
+        proxy_buffering off;
+        proxy_buffer_size 128k;
+        proxy_buffers 8 128k;
+        proxy_busy_buffers_size 256k;
+    }
+}</code></pre></div><p>上传上限 100 MB 和 600 秒超时是本教程示例，可按需求调整；如果改了 <code>PORT</code>，同步修改 <code>proxy_pass</code>。</p><div class="code-block"><div class="code-head"><span>BASH · 加载反代配置</span><button class="copy-button">复制</button></div><pre><code>sudo nginx -t
+sudo systemctl reload nginx
+curl -I https://mirror.example.com/admin/</code></pre></div><p>使用 Cloudflare 时，开启 WebSocket，源站安装有效证书，SSL/TLS 使用 Full (strict)。不要缓存登录、管理 API 或对话请求。</p></div></details><div class="callout"><span>↳</span><p>生产环境保持三个 Secure Cookie 选项为 <code>true</code>，并通过 HTTPS 登录。<code>DJANGO_ALLOW_ALL_ORIGINS=disable</code> 时启用明确的域名与 CSRF 白名单。</p></div></article>
+<article class="guide-step" id="guide-first-run"><div class="step-heading"><span>04</span><h3>登录后台，开始第一次对话</h3></div><p>访问 <code>https://mirror.example.com/admin/</code>，使用 <code>.env</code> 中设置的管理员账号登录，然后依次完成：</p><ol class="setup-list"><li><strong>添加上游账号</strong><span>在「上游账号」录入你有授权的 Cookie 或 Refresh Token，检查状态，必要时刷新凭据。</span></li><li><strong>组织账号池</strong><span>在「账号池」中添加可用账号，为镜像用户分配对应的访问范围。</span></li><li><strong>配置用户权限</strong><span>在「用户」里创建用户，设置可用模型与使用限制。需要代理时，在「代理」中配置并测试连通性。</span></li></ol><p class="helper-text">管理后台为 Vue 管理界面，不是 Django 原生 admin。管理员修改用户权限或密码可能导致该用户的活跃会话退出。</p></article>
+</div>
+<article class="guide-step maintenance" id="maintenance"><div class="step-heading"><span>05</span><h3>让它稳定运行：更新与备份</h3></div><p>下列示例在项目目录的 Bash 中运行。当前编排的数据分布在 <code>data/</code>、<code>backend/db/</code> 和 <code>backend/logs/</code>；<code>.env</code> 中的加密密钥也要一起妥善保存。</p><details class="technical-detail"><summary>备份、更新与恢复步骤 <span>＋</span></summary><div class="detail-body"><p><strong>1. 先备份。</strong>短暂停机可避免拷贝正在写入的 SQLite 数据。备份包含凭据，存放在受控目录，不要提交到 Git 或公开网站。</p><div class="code-block"><div class="code-head"><span>BASH · 一致性备份</span><button class="copy-button">复制</button></div><pre><code>mkdir -p ../mirror-backups
+chmod 700 ../mirror-backups
+umask 077
+docker compose stop
+tar -czf "../mirror-backups/mirror-$(date +%Y%m%d-%H%M%S).tar.gz" \
+  .env docker-compose.yml data backend/db backend/logs
+docker compose start</code></pre></div><p><strong>2. 检查上游变更，再更新镜像。</strong>先记录当前镜像 ID / digest；查阅新版本配置差异，保留本地回环端口修改。下列命令仅更新容器镜像，不会同步 Git 配置文件。</p><div class="code-block"><div class="code-head"><span>BASH · 更新服务</span><button class="copy-button">复制</button></div><pre><code>docker compose images
+docker compose pull
+docker compose up -d
+docker compose ps
+docker compose logs --tail=100
+curl -fsS http://127.0.0.1:18000/0x/user/version-cfg</code></pre></div><p>3. 恢复备份。遇到更新异常时，先停止服务，将备份解压到独立目录，再恢复数据库、原始加密密钥以及与备份匹配的镜像版本。不要覆盖正在运行的数据库。</p><p>不要随意更换 <code>CREDENTIAL_ENCRYPTION_KEY</code>；丢失原始密钥可能使已有加密凭据无法解密。</p></div></details></article>
+</div></div>
+</section>
+<section aria-labelledby="faq-title" class="faq-section wrap" id="faq"><div class="faq-heading"><h2 id="faq-title">常见问题</h2><!-- 外部项目链接暂不展示：<a class="inline-link" href="https://github.com/Jasa-Chi-Ray/chatgpt-mirror/issues" target="_blank" rel="noopener noreferrer">在 GitHub 查看 Issues ↗</a> --></div><div class="faq-list">
+<details><summary>这是 OpenAI 官方项目吗？可以商用吗？<span>＋</span></summary><p>这是 Jasa-Chi-Ray 本人维护的第三方项目，与 OpenAI 官方无隶属关系。只允许个人学习、研究和其他非商业用途；商业使用需要事先取得作者书面许可。部分组件并未开源，具体以仓库许可说明为准。</p></details>
+<details><summary>部署后就能免费使用所有模型吗？<span>＋</span></summary><p>不能。你仍需要有授权且有效的上游账号；模型、额度和功能由账号权限及上游服务决定。镜像站提供使用和管理入口，不会额外授予订阅或模型使用权。</p></details>
+<details><summary>登录失败、CSRF 报错或反复退出怎么办？<span>＋</span></summary><p>先检查浏览器使用的域名是否包含在 DJANGO_ALLOWED_HOSTS 中；DJANGO_CSRF_TRUSTED_ORIGINS 必须含正确协议，非默认端口也要填写。确认 NGINX 转发 Host 与 X-Forwarded-Proto。VPS 的 HTTPS 访问保持三个 Secure Cookie 选项为 true。修改 .env 后运行 docker compose up -d 重建服务。</p></details>
+<details><summary>出现 400、414 或 upstream sent too big header？<span>＋</span></summary><p>参照部署指南中的 NGINX 配置，增加 client_header_buffer_size、large_client_header_buffers 及代理响应头缓冲。先用 nginx -t 检查，再 reload。如果前方还有 CDN 或其他反代，也要查看它们的请求头与 URL 长度限制。</p></details>
+<details><summary>页面能打开，但消息中断或一直加载？<span>＋</span></summary><p>检查 NGINX 与 Cloudflare 的 WebSocket 支持、上游账号凭据和代理连通性，查看 chatgpt-mirror、django、cfbypass 三个服务的日志。浏览器网络面板中检查失败请求。</p></details>
+<details><summary>可以完全避免“降智”或保证账号隔离吗？<span>＋</span></summary><p>不能作此保证。项目持续改善相关体验，但仓库复测只是特定时间与环境的结果。curl-impersonate 等方案属于实验性能力。共享账号隔离仅覆盖镜像可控制的范围，不等同于独立上游账号之间的隔离。</p></details>
+</div></section>
+<div class="post-return wrap"><a href="../../#projects">← 所有项目</a><p>项目与截图版权归原作者。仅供个人学习、研究及获授权的非商业用途。</p></div>
+</main>
+<footer class="blog-footer wrap"><a href="../../">Jasa-Chi-Ray</a><a href="#main">回到顶部 ↑</a></footer>
+<dialog aria-label="产品截图大图" id="image-dialog"><button aria-label="关闭大图" class="dialog-close">关闭 ×</button><img alt="项目界面大图" src="../../assets/chat-preview.png"/></dialog>
+<div aria-live="polite" class="toast" role="status"></div>
+</body>
+</html>
