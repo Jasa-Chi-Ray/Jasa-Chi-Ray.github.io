@@ -1,0 +1,152 @@
+{
+  "updated": "2026-09-17",
+  "count": 120,
+  "target": "https://jasa-chi-ray.github.io/projects/chatgpt-mirror/",
+  "note": "主题与搜索意图词库，不代表搜索量或排名。免费和一键部署类词以问答解释实际条件。Google 不使用 meta keywords 排名。",
+  "groups": {
+    "品牌与项目": [
+      "jasachiray",
+      "jasa-chi-ray",
+      "Jasa Chi Ray",
+      "https://github.com/jasa-chi-ray",
+      "https://github.com/Jasa-Chi-Ray/chatgpt-mirror",
+      "chatgpt-mirror",
+      "chatgpt mirror",
+      "mirror",
+      "Jasa-Chi-Ray 博客",
+      "Jasa-Chi-Ray ChatGPT Mirror"
+    ],
+    "镜像站入门": [
+      "ChatGPT 镜像站",
+      "ChatGPT 镜像站部署",
+      "镜像站 部署",
+      "自己部署 ChatGPT 镜像站",
+      "自建 ChatGPT 镜像站",
+      "ChatGPT Mirror 是什么",
+      "ChatGPT 镜像项目介绍",
+      "ChatGPT 镜像站搭建教程",
+      "ChatGPT 镜像站部署流程",
+      "ChatGPT 镜像站部署需要什么"
+    ],
+    "部署方式": [
+      "一键部署自己的 ChatGPT 镜像站点",
+      "一 键 部署 自己 的 ChatGPT 镜像 站点",
+      "免费的 ChatGPT 镜像 站点 自己 部署",
+      "自己部署 ChatGPT 镜像站免费吗",
+      "ChatGPT Mirror 部署成本",
+      "ChatGPT Mirror VPS 部署",
+      "ChatGPT Mirror 服务器部署",
+      "ChatGPT Mirror Linux 部署",
+      "ChatGPT Mirror Docker 部署",
+      "ChatGPT Mirror Docker Compose 部署"
+    ],
+    "Docker 与容器": [
+      "Docker Compose v2 镜像站",
+      "Docker Engine 镜像站部署",
+      "chatgpt-mirror docker-compose.yml",
+      "chatgpt-mirror frontend 镜像",
+      "chatgpt-mirror backend 镜像",
+      "chatgpt-mirror cfbypass 服务",
+      "ChatGPT Mirror 三服务编排",
+      "ChatGPT Mirror 容器启动",
+      "ChatGPT Mirror 拉取镜像",
+      "ChatGPT Mirror 容器日志"
+    ],
+    "配置与端口": [
+      "chatgpt-mirror .env 配置",
+      "chatgpt-mirror .env.example",
+      "ChatGPT Mirror 默认端口 40002",
+      "ChatGPT Mirror 管理端口 18000",
+      "ChatGPT Mirror 辅助端口 18001",
+      "ChatGPT Mirror ADMIN_USERNAME",
+      "ChatGPT Mirror ADMIN_PASSWORD",
+      "ChatGPT Mirror GATEWAY_ADMIN_SECRET",
+      "ChatGPT Mirror DJANGO_SECRET_KEY",
+      "ChatGPT Mirror CREDENTIAL_ENCRYPTION_KEY"
+    ],
+    "域名与 HTTPS": [
+      "ChatGPT 镜像站域名配置",
+      "ChatGPT 镜像站 DNS 解析",
+      "ChatGPT Mirror HTTPS 部署",
+      "ChatGPT Mirror SSL 证书",
+      "ChatGPT Mirror TLS 配置",
+      "ChatGPT Mirror NGINX 反向代理",
+      "ChatGPT Mirror NGINX 配置示例",
+      "ChatGPT Mirror Certbot 证书",
+      "ChatGPT Mirror Cloudflare 配置",
+      "ChatGPT Mirror WebSocket 配置"
+    ],
+    "用户与账号": [
+      "ChatGPT Mirror 多用户管理",
+      "ChatGPT Mirror 账号池",
+      "ChatGPT Mirror 账号池分配",
+      "ChatGPT Mirror Cookie 录入",
+      "ChatGPT Mirror Refresh Token",
+      "ChatGPT Mirror 上游账号",
+      "ChatGPT Mirror 账号凭据刷新",
+      "ChatGPT Mirror 用户权限",
+      "ChatGPT Mirror 模型权限",
+      "ChatGPT Mirror 使用限制"
+    ],
+    "后台与功能": [
+      "ChatGPT Mirror 管理后台",
+      "ChatGPT Mirror 管理员登录",
+      "ChatGPT Mirror admin 入口",
+      "ChatGPT Mirror 登录页面",
+      "ChatGPT Mirror 对话界面",
+      "ChatGPT Mirror 访问日志",
+      "ChatGPT Mirror 代理配置",
+      "ChatGPT Mirror 代理连通性",
+      "ChatGPT Mirror 禁止访问路径",
+      "ChatGPT Mirror 站点配置"
+    ],
+    "隔离与兼容": [
+      "ChatGPT Mirror 会话隔离",
+      "ChatGPT Mirror 共享账号隔离",
+      "ChatGPT Mirror 对话归档",
+      "ChatGPT Mirror 项目隔离",
+      "ChatGPT Mirror MCP 隔离",
+      "ChatGPT Mirror skills 隔离",
+      "ChatGPT Mirror 移动端访问",
+      "ChatGPT Mirror iPhone Safari",
+      "ChatGPT Mirror iPhone Chrome",
+      "ChatGPT Mirror 弱网体验"
+    ],
+    "数据与维护": [
+      "ChatGPT Mirror SQLite 数据库",
+      "ChatGPT Mirror 数据目录",
+      "ChatGPT Mirror 数据备份",
+      "ChatGPT Mirror 停机备份",
+      "ChatGPT Mirror 恢复备份",
+      "ChatGPT Mirror 更新教程",
+      "ChatGPT Mirror 更新镜像",
+      "ChatGPT Mirror 数据持久化",
+      "ChatGPT Mirror 镜像版本",
+      "ChatGPT Mirror 日常维护"
+    ],
+    "故障处理": [
+      "ChatGPT Mirror CSRF 错误",
+      "ChatGPT Mirror 登录失败",
+      "ChatGPT Mirror Cookie Secure 配置",
+      "ChatGPT Mirror DJANGO_ALLOWED_HOSTS",
+      "ChatGPT Mirror DJANGO_CSRF_TRUSTED_ORIGINS",
+      "ChatGPT Mirror 400 错误",
+      "ChatGPT Mirror 414 错误",
+      "ChatGPT Mirror upstream sent too big header",
+      "ChatGPT Mirror 消息中断",
+      "ChatGPT Mirror 一直加载"
+    ],
+    "英文搜索": [
+      "ChatGPT Mirror deployment guide",
+      "ChatGPT Mirror self hosted",
+      "ChatGPT Mirror VPS setup",
+      "ChatGPT Mirror Docker Compose tutorial",
+      "ChatGPT Mirror NGINX reverse proxy",
+      "ChatGPT Mirror HTTPS configuration",
+      "ChatGPT Mirror account pool",
+      "ChatGPT Mirror multi user",
+      "ChatGPT Mirror backup restore",
+      "ChatGPT Mirror troubleshooting"
+    ]
+  }
+}
